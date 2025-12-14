@@ -2,24 +2,25 @@ let amigos = [];
 function adicionar(){
     let nomeDoAmigo = document.getElementById('nome-amigo');  
     let listaIncluidos = document.getElementById('lista-amigos');
+    let validacao;
 
-    if (nomeDoAmigo.value === ''){
+    if (nomeDoAmigo.value.trim() === ''){
         alert('Por favor informe um nome válido');
         nomeDoAmigo.focus();
         return;
     } 
-    
-    if (amigos.includes(nomeDoAmigo.value)){
-        alert(`Nome ${nomeDoAmigo} ja incluido na lista`);
+    validacao = nomeDoAmigo.value.toUpperCase().trim();
+    if (amigos.includes(validacao)){
+        alert(`Nome ${validacao} ja incluido na lista`);
         return;
     }
     
-    amigos.push(nomeDoAmigo.value);    
+    amigos.push(validacao);    
 
     if (listaIncluidos.textContent == ''){        
-        listaIncluidos.textContent = nomeDoAmigo.value;
+        listaIncluidos.textContent = validacao;
     }else {        
-        listaIncluidos.textContent = listaIncluidos.textContent + ', ' + nomeDoAmigo.value;
+        listaIncluidos.textContent = listaIncluidos.textContent + ', ' + validacao;
     }
     nomeDoAmigo.value = '';
     nomeDoAmigo.focus();
