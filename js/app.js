@@ -1,76 +1,68 @@
-let listaIncluidos = document.getElementById('lista-amigos');
+let amigos = [];
 function adicionar(){
-    let nomeDoAmigo = document.getElementById('nome-amigo');    
-    adicionarNome(nomeDoAmigo.value);
+    let nomeDoAmigo = document.getElementById('nome-amigo');  
+    let listaIncluidos = document.getElementById('lista-amigos');
+
+    if (nomeDoAmigo.value === ''){
+        alert('Por favor informe um nome válido');
+        nomeDoAmigo.focus();
+        return;
+    } 
+    
+    if (amigos.includes(nomeDoAmigo.value)){
+        alert(`Nome ${nomeDoAmigo} ja incluido na lista`);
+        return;
+    }
+    
+    amigos.push(nomeDoAmigo.value);    
+
+    if (listaIncluidos.textContent == ''){        
+        listaIncluidos.textContent = nomeDoAmigo.value;
+    }else {        
+        listaIncluidos.textContent = listaIncluidos.textContent + ', ' + nomeDoAmigo.value;
+    }
     nomeDoAmigo.value = '';
     nomeDoAmigo.focus();
 
 }
 function sortear(){
-    let listaParticipantes = document.getElementById('lista-amigos');
-    let participantes = listaParticipantes.textContent; 
-    
-    if(participantes.length < 2){
-        alert('É necessário ao menos 2 participantes para o sorteio!');
+    let listaAmigoSecreto = document.getElementById('lista-sorteio');
+
+    if(amigos.length < 4){
+        alert('Necessário no mínimo 4 nomes para o soteio');
         return;
     }
+    embaralha(amigos);
     
-    let listaSorteio = participantes.split(',').map(nome => nome.trim()).filter(nome => nome.length >0);
-
-    if(participantes < 2){
-        alert('É necessário ao menos 2 participantes para o sorteio!');
-        return;
-    }
-
-    let sorteio = [...listaSorteio];
-    let resultado = {};
-    
-    listaSorteio.forEach(lista => {
-        let sorteado;
-        let indice;
-        do {
-            indice = Math.floor(Math.random() * sorteio.length);
-            sorteado = sorteio[indice];
-        } while (lista === sorteado);
-        sorteio.splice(indice, 1);
-
-        resultado[lista] = sorteado;
-    })
-
-    for (const [sorteador,sorteado] of Object.entries(resultado)){            
-            adicionarListaSorteada(sorteador, sorteado);            
-        } 
+    for (let i = 0 ; i < amigos.length ; i++ ){    
+        
+        if(i == amigos.length - 1){
+        
+            listaAmigoSecreto.innerHTML += `${amigos[i]} --> ${amigos[0]} <br>`;
+        }else {
+        
+            listaAmigoSecreto.innerHTML += `${amigos[i]} --> ${amigos[i + 1]} <br>`;
+        }
+            
+        }
 }
 function reiniciar(){
     document.getElementById('lista-amigos').textContent = '';
     document.getElementById('nome-amigo').value = '';
     document.getElementById('lista-sorteio').textContent = '';
     document.getElementById('nome-amigo').focus();
+    amigos = [];
 
 }
 
-function adicionarNome(nome) {
-    if (nome === ''){
-        alert('Por favor informe um nome válido');
-        return;
+function embaralha(lista) {
+
+    for (let indice = lista.length; indice; indice--) {
+
+        const indiceAleatorio = Math.floor(Math.random() * indice);
+
+        // atribuição via destructuring
+        [lista[indice - 1], lista[indiceAleatorio]] = 
+            [lista[indiceAleatorio], lista[indice - 1]];
     }
-    if(listaIncluidos.textContent.length > 0){
-        listaIncluidos.textContent += `, ${nome}`;
-    }else {
-        listaIncluidos.textContent = nome;
-    }    
-}
-
-function adicionarListaSorteada(sorteador, sorteado) {
-    console.log(`${sorteador} tirou ${sorteado}`);
-let listaAmigoSecreto = document.getElementById('lista-sorteio');
-let parSorteado = `${sorteador} --> ${sorteado}<br>`;
-
-
-if (listaAmigoSecreto.textContent.length > 0){
-    listaAmigoSecreto.innerHTML += parSorteado;    
-} else {
-    listaAmigoSecreto.innerHTML = parSorteado;
-}
-    
 }
